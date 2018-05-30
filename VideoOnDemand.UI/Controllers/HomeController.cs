@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using VideoOnDemand.Data.Data.Entities;
 using VideoOnDemand.UI.Models;
 using Microsoft.AspNetCore.Identity;
+using VideoOnDemand.UI.Repositories;
 
 namespace VideoOnDemand.UI.Controllers
 {

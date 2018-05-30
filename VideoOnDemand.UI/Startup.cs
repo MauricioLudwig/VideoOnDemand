@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using VideoOnDemand.Data.Data.Entities;
 using VideoOnDemand.UI.Services;
 using VideoOnDemand.Data.Data;
+using VideoOnDemand.UI.Repositories;
+using VideoOnDemand.UI.Models.DTOModels;
 
 namespace VideoOnDemand.UI
 {
@@ -33,10 +35,36 @@ namespace VideoOnDemand.UI
                 .AddEntityFrameworkStores<VODContext>()
                 .AddDefaultTokenProviders();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            });
+
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+
+            services.AddSingleton<IReadRepository, MockReadRepository>();
+
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Video, VideoDTO>();
+                cfg.CreateMap<Download, DownloadDTO>()
+                    .ForMember(dest => dest.DownloadUrl,
+                    src => src.MapFrom(s => s.Url))
+                    .ForMember(dest => dest.DownloadTitle,
+                    src => src.MapFrom(s => s.Title));
+
+                /* A bunch more */
+            });
+
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
