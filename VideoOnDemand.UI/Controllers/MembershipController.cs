@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VideoOnDemand.Data.Data.Entities;
 using VideoOnDemand.UI.Models.DTOModels;
+using VideoOnDemand.UI.Models.MembershipViewModels;
 using VideoOnDemand.UI.Repositories;
 
 namespace VideoOnDemand.UI.Controllers
@@ -30,19 +31,88 @@ namespace VideoOnDemand.UI.Controllers
         [HttpGet]
         public IActionResult Dashboard()
         {
-            return View();
+            var courseDtoObjects = _mapper.Map<List<CourseDTO>>(_db.GetCourses(_userId));
+
+            var dashboardModel = new DashboardViewModel();
+            dashboardModel.Courses = new List<List<CourseDTO>>();
+
+            var noOfRows = courseDtoObjects.Count <= 3 ? 1 : courseDtoObjects.Count / 3;
+
+            for (var i = 0; i < noOfRows; i++)
+            {
+                dashboardModel.Courses.Add(courseDtoObjects.Take(3).ToList());
+            }
+
+            return View(dashboardModel);
         }
 
         [HttpGet]
         public IActionResult Course(int id)
         {
-            return View();
+            var course = _db.GetCourse(_userId, id);
+            var mappedCourseDTOs = _mapper.Map<CourseDTO>(course);
+
+            var mappedInstructorDTO = _mapper.Map<InstructorDTO>(course.Instructor);
+
+            var mappedModuleDTOs = _mapper.Map<List<ModuleDTO>>(course.Modules);
+
+            for (var i = 0; i < mappedModuleDTOs.Count; i++)
+            {
+                mappedModuleDTOs[i].Downloads = 
+                    course.Modules[i].Downloads.Count.Equals(0) ? null :
+                    _mapper.Map<List<DownloadDTO>>(course.Modules[i].Downloads);
+
+                mappedModuleDTOs[i].Videos =
+                    course.Modules[i].Downloads.Count.Equals(0) ? null :
+                    _mapper.Map<List<VideoDTO>>(course.Modules[i].Videos);
+            }
+
+            var courseModel = new CourseViewModel
+            {
+                Course = mappedCourseDTOs,
+                Instructor = mappedInstructorDTO,
+                Modules = mappedModuleDTOs
+            };
+
+            return View(courseModel);
         }
 
         [HttpGet]
         public IActionResult Video(int id)
         {
-            return View();
+            var video = _db.GetVideo(_userId, id);
+            var course = _db.GetCourse(_userId, video.CourseId);
+            var mappedVideoDTO = _mapper.Map<VideoDTO>(video);
+            var mappedCourseDTO = _mapper.Map<CourseDTO>(course);
+            var mappedInstructorDTO = _mapper.Map<InstructorDTO>(course.Instructor);
+            // Added so we can get the number of videos in the module and to get the index of the current video
+            var videos = _db.GetVideos(_userId, video.ModuleId).ToList();
+            var count = videos.Count();
+            var index = videos.IndexOf(video);
+            var previous = videos.ElementAtOrDefault(index - 1);
+            var previousId = previous == null ? 0 : previous.Id;
+            var next = videos.ElementAtOrDefault(index + 1);
+            var nextId = next == null ? 0 : next.Id;
+            var nextTitle = next == null ? string.Empty : next.Title;
+            var nextThumb = next == null ? string.Empty : next.Thumbnail;
+
+            var videoModel = new VideoViewModel
+            {
+                Video = mappedVideoDTO,
+                Instructor = mappedInstructorDTO,
+                Course = mappedCourseDTO,
+                LessonInfo = new LessonInfoDTO
+                {
+                    LessonNumber = index + 1,
+                    NumberOfLessons = count,
+                    NextVideoId = nextId,
+                    PreviousVideoId = previousId,
+                    NextVideoTitle = nextTitle,
+                    NextVideoThumbnail = nextThumb
+                }
+            };
+
+            return View(videoModel);
         }
 
     }
