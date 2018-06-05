@@ -19,10 +19,10 @@ namespace VideoOnDemand.UI.Repositories
 
         List<UserCourse> _userCourses = new List<UserCourse>
         {
-            new UserCourse { UserId = "e97cf155-2d07-4e2c-825e-8f8c7c4a15ba", CourseId = 1 },
-            new UserCourse { UserId = "e97cf155-2d07-4e2c-825e-8f8c7c4a15ba", CourseId = 2 },
-            new UserCourse { UserId = "e97cf155-2d07-4e2c-825e-8f8c7c4a15ba", CourseId = 3 },
-            new UserCourse { UserId = "e97cf155-2d07-4e2c-825e-8f8c7c4a15ba", CourseId = 1 },
+            new UserCourse { UserId = "50327608-0f5d-4e52-97dc-1f19c0081a67", CourseId = 1 },
+            new UserCourse { UserId = "50327608-0f5d-4e52-97dc-1f19c0081a67", CourseId = 2 },
+            new UserCourse { UserId = "50327608-0f5d-4e52-97dc-1f19c0081a67", CourseId = 3 },
+            new UserCourse { UserId = "50327608-0f5d-4e52-97dc-1f19c0081a67", CourseId = 4 },
         };
 
         List<Module> _modules = new List<Module>

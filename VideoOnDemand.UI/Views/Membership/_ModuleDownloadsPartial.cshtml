@@ -1,0 +1,12 @@
+﻿@model IEnumerable<DownloadDTO>
+
+<p>Downloads</p>
+
+<ul>
+    @foreach (var download in Model)
+    {
+        <li>
+            <a href="@download.DownloadUrl" target="_blank">@download.DownloadTitle</a>
+        </li>
+    }
+</ul>

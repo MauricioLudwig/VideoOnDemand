@@ -1,0 +1,33 @@
+﻿@model CourseViewModel
+
+@{
+    ViewData["Title"] = "Course";
+}
+
+<h2>Course</h2>
+
+<a asp-controller="Membership" asp-action="Dashboard">Back to Dashboard</a>
+
+@foreach (var module in Model.Modules)
+{
+    <div style="margin-bottom: 20px; border: 1px solid black; padding: 30px;">
+        <h5>@module.ModuleTitle</h5>
+        @if (module.Videos != null)
+        {
+            @await Html.PartialAsync("_ModuleVideosPartial", module.Videos)
+        }
+        else
+        {
+            <p>No videos present</p>
+        }
+        @if (module.Downloads != null)
+        {
+            @await Html.PartialAsync("_ModuleDownloadsPartial", module.Downloads)
+        }
+    </div>
+}
+
+@if (Model.Instructor != null)
+{
+    @await Html.PartialAsync("_InstructorBioPartial", Model.Instructor)
+}

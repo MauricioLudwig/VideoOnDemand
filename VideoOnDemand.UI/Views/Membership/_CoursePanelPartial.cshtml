@@ -1,0 +1,7 @@
+﻿@model CourseDTO
+
+<div style="margin-top: 20px; border: 1px solid black; padding: 30px;">
+    <h2>@Model.CourseTitle</h2>
+    <p>@Model.CourseDescription</p>
+    <a asp-controller="Membership" asp-action="Course" asp-route-id="@Model.CourseId">View Course</a>
+</div>

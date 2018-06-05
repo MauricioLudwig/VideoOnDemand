@@ -1,0 +1,19 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<table>
+    <tbody>
+        @foreach (var dashboardRow in Model.Courses)
+        {
+            <tr>
+                @foreach (var course in dashboardRow)
+                {
+                    @await Html.PartialAsync("_CoursePanelPartial", course)
+                }
+            </tr>
+        }
+    </tbody>
+</table>
