@@ -1,0 +1,12 @@
+﻿@model  IEnumerable<VideoDTO>
+
+@foreach (var video in Model)
+{
+    <a asp-controller="Membership" asp-action="Video" asp-route-id="@video.Id">
+        <div style="margin-bottom: 20px; border: 1px solid #c6c6c6; border-radius: 5px; padding: 20px;">
+            <h5>@video.Title</h5>
+            <p>@video.Description</p>
+            <p>Duration: @video.Duration</p>
+        </div>
+    </a>
+}
